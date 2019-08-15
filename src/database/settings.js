@@ -2,9 +2,9 @@ module.exports = {
   database: {
     protocol: 'mysql',
     query: { pool: true },
-    host: 'db4free.net',
-    database: 'shortcutlinkdb',
-    user: 'shortcutlinkdb',
-    password: 'shortcutlinkdb'
+    host: process.env.DB_HOST,
+    database: process.env.DB_DATABASE,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD
   }
 };

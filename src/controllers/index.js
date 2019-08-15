@@ -1,3 +1,4 @@
 const account = require('./account');
+const session = require('./session');
 
-module.exports = { account };
+module.exports = { account, session };
