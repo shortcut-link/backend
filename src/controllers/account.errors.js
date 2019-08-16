@@ -1,4 +1,4 @@
-const SwitchError = errorText => {
+const switchError = errorText => {
   switch (errorText) {
     case 'not-unique':
       return 'email_already_exists';
@@ -11,12 +11,18 @@ const SwitchError = errorText => {
   }
 };
 
-const errorCreateAccount = (error, res) => {
-  const errorText = error[0].msg;
+/**
+ * Error generation account controller
+ * @param { [{  msg: string  }] | string } error Error to be handled
+ * @param  {Response } res Response router
+ */
+const accountError = (error, res) => {
+  const errorText = error[0].msg || error;
+
   res.json({
     ok: false,
-    error: SwitchError(errorText)
+    error: switchError(errorText)
   });
 };
 
-module.exports = { errorCreateAccount };
+module.exports = { accountError };

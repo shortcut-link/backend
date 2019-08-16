@@ -23,6 +23,11 @@ module.exports = (orm, db) => {
           orm.enforce.unique({ ignoreCase: true })
         ],
         password: [orm.enforce.security.password('password-invalid')]
+      },
+      methods: {
+        isValidPassword: function(password) {
+          return bcrypt.compareSync(password, this.password);
+        }
       }
     }
   );

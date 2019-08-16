@@ -1,17 +1,18 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 
-const { errorCreateAccount } = require('./account.errors');
+const { accountError } = require('./account.errors');
 
 const router = express.Router();
 
+/* Create user account */
 router.post('/', (req, res) => {
   const { email, password } = req.body;
 
   req.models.users.create({ email, password }, (error, user) => {
-    if (error) {
-      errorCreateAccount(error, res);
-    } else {
+    try {
+      if (error) throw error;
+
       const { email, createdAt } = user;
       const token = jwt.sign({ email, createdAt }, process.env.PRIVATEKEY);
 
@@ -19,6 +20,8 @@ router.post('/', (req, res) => {
         ok: true,
         result: { user: { email }, token }
       });
+    } catch (error) {
+      accountError(error, res);
     }
   });
 });
