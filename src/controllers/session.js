@@ -2,7 +2,8 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 
 const { authenticate } = require('../middlewares/authenticate');
-const { sessionError } = require('./session.errors');
+const errorHandler = require('../common/errorHandler');
+const models = require('../../models');
 
 const router = express.Router();
 
@@ -12,53 +13,47 @@ router.use(authenticate);
 router.get('/', (req, res) => {
   const { email } = req.decodedToken;
 
-  req.models.users.find({ email }, (error, user) => {
-    try {
-      if (error) throw error;
-      if (!user || user.length !== 1) throw 'user-not-found';
-
-      const { email } = user[0];
-
+  models.user
+    .findOne({
+      where: { email },
+      attributes: ['email', 'linkTransitions']
+    })
+    .then(({ dataValues }) => {
       res.json({
         ok: true,
-        result: {
-          user: {
-            email
-          }
-        }
+        result: { user: dataValues }
       });
-    } catch (error) {
-      sessionError(error, res);
-    }
-  });
+    })
+    .catch(error => errorHandler(error, res));
 });
 
 /* Creating a user session */
 router.post('/', (req, res) => {
   const { email, password } = req.body;
 
-  req.models.users.find({ email }, async (error, user) => {
-    try {
-      if (error) throw error;
-      if (!user || user.length !== 1) throw 'user-not-found';
+  models.user
+    .findOne({
+      where: { email },
+      attributes: ['email', 'password', 'createdAt', 'linkTransitions']
+    })
+    .then(user => {
+      if (user && user.isValidPassword(password)) {
+        const { email, createdAt, linkTransitions } = user.dataValues;
 
-      const { isValidPassword, createdAt } = user[0];
+        const token = jwt.sign({ email, createdAt }, process.env.PRIVATEKEY);
 
-      if (!isValidPassword(password)) throw 'password-incorrect';
-
-      const token = jwt.sign({ email, createdAt }, process.env.PRIVATEKEY);
-
-      res.json({
-        ok: true,
-        result: {
-          user: { email },
-          token
-        }
-      });
-    } catch (error) {
-      sessionError(error, res);
-    }
-  });
+        res.json({
+          ok: true,
+          result: {
+            user: { email, linkTransitions },
+            token
+          }
+        });
+      } else {
+        throw 'data_incorrect';
+      }
+    })
+    .catch(error => errorHandler(error, res));
 });
 
 module.exports = router;

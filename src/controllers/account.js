@@ -1,7 +1,8 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 
-const { accountError } = require('./account.errors');
+const models = require('../../models');
+const errorHandler = require('../common/errorHandler');
 
 const router = express.Router();
 
@@ -9,21 +10,17 @@ const router = express.Router();
 router.post('/', (req, res) => {
   const { email, password } = req.body;
 
-  req.models.users.create({ email, password }, (error, user) => {
-    try {
-      if (error) throw error;
-
-      const { email, createdAt } = user;
+  models.user
+    .create({ email, password })
+    .then(({ dataValues: { email, createdAt, linkTransitions } }) => {
       const token = jwt.sign({ email, createdAt }, process.env.PRIVATEKEY);
 
       res.json({
         ok: true,
-        result: { user: { email }, token }
+        result: { user: { email, linkTransitions }, token }
       });
-    } catch (error) {
-      accountError(error, res);
-    }
-  });
+    })
+    .catch(error => errorHandler(error, res));
 });
 
 module.exports = router;
