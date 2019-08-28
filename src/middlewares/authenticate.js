@@ -1,17 +1,25 @@
 const jwt = require('jsonwebtoken');
 
-const authenticate = (req, res, next) => {
+const models = require('../../models');
+
+const authenticate = (req, _, next) => {
   const token = req.cookies['sc-token'];
 
-  if (token) {
-    jwt.verify(token, process.env.PRIVATEKEY, (_, decoded) => {
-      if (decoded) {
-        req.decodedToken = { email: decoded.email };
-      }
-    });
-  }
+  if (!token) return next();
 
-  next();
+  jwt.verify(token, process.env.PRIVATEKEY, (_, decoded) => {
+    if (!decoded) return next();
+
+    models.user
+      .findOne({
+        where: { email: decoded.email },
+        attributes: ['id', 'email', 'linkTransitions']
+      })
+      .then(({ dataValues }) => {
+        req.decodedToken = dataValues;
+        next();
+      });
+  });
 };
 
 module.exports = { authenticate };

@@ -3,8 +3,11 @@ const jwt = require('jsonwebtoken');
 
 const models = require('../../models');
 const errorHandler = require('../common/errorHandler');
+const { authenticate } = require('../middlewares/authenticate');
 
 const router = express.Router();
+
+router.use(authenticate);
 
 /* Create user account */
 router.post('/', (req, res) => {
@@ -12,13 +15,29 @@ router.post('/', (req, res) => {
 
   models.user
     .create({ email, password })
-    .then(({ dataValues: { email, createdAt, linkTransitions } }) => {
-      const token = jwt.sign({ email, createdAt }, process.env.PRIVATEKEY);
+    .then(({ dataValues: { email, linkTransitions } }) => {
+      const token = jwt.sign({ email }, process.env.PRIVATEKEY);
 
       res.json({
         ok: true,
         result: { user: { email, linkTransitions }, token }
       });
+    })
+    .catch(error => errorHandler(error, res));
+});
+
+router.post('/link', (req, res) => {
+  const { email } = req.decodedToken;
+  const field = req.body;
+
+  models.user
+    .findOne({
+      where: { email }
+    })
+    .then(user => {
+      user
+        .update(field, { fields: ['linkTransitions'] })
+        .then(() => res.json({ ok: true }));
     })
     .catch(error => errorHandler(error, res));
 });

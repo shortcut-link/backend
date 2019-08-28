@@ -11,20 +11,17 @@ router.use(authenticate);
 
 /* Getting a user session by mail from a token */
 router.get('/', (req, res) => {
-  const { email } = req.decodedToken;
+  const token = req.decodedToken;
 
-  models.user
-    .findOne({
-      where: { email },
-      attributes: ['email', 'linkTransitions']
-    })
-    .then(({ dataValues }) => {
-      res.json({
-        ok: true,
-        result: { user: dataValues }
-      });
-    })
-    .catch(error => errorHandler(error, res));
+  try {
+    const { email, linkTransitions } = token;
+    res.json({
+      ok: true,
+      result: { user: email, linkTransitions }
+    });
+  } catch (error) {
+    errorHandler(error, res);
+  }
 });
 
 /* Creating a user session */
@@ -34,13 +31,13 @@ router.post('/', (req, res) => {
   models.user
     .findOne({
       where: { email },
-      attributes: ['email', 'password', 'createdAt', 'linkTransitions']
+      attributes: ['email', 'password', 'linkTransitions']
     })
     .then(user => {
       if (user && user.isValidPassword(password)) {
-        const { email, createdAt, linkTransitions } = user.dataValues;
+        const { email, linkTransitions } = user.dataValues;
 
-        const token = jwt.sign({ email, createdAt }, process.env.PRIVATEKEY);
+        const token = jwt.sign({ email }, process.env.PRIVATEKEY);
 
         res.json({
           ok: true,
