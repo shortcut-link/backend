@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
 
     res.json({
       ok: true,
-      result: { user: email, linkTransitions }
+      result: { user: { email, linkTransitions } }
     });
   } catch (error) {
     errorHandler.common(error, res);
