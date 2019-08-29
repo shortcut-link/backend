@@ -18,7 +18,13 @@ module.exports = (sequelize, DataTypes) => {
       },
       originalUrl: {
         type: DataTypes.STRING(2084),
-        allowNull: false
+        allowNull: false,
+        validate: {
+          isUrl: {
+            args: true,
+            msg: 'not_valid_url'
+          }
+        }
       },
       user: {
         type: DataTypes.INTEGER,
@@ -44,6 +50,11 @@ module.exports = (sequelize, DataTypes) => {
 
             const transitions = createdLink.linkTransitions;
             createdLink.linkTransitions = transitions === true ? 0 : null;
+
+            createdLink.originalUrl = createdLink.originalUrl.replace(
+              /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?([a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?)$/,
+              '$2'
+            );
           }
         ]
       }

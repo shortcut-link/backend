@@ -24,9 +24,9 @@ router.post('/', (req, res) => {
           result: { user: { email, linkTransitions }, token }
         });
       })
-      .catch(error => errorHandler(error, res));
+      .catch(error => errorHandler.common(error, res));
   } catch (error) {
-    errorHandler(error, res);
+    errorHandler.common(error, res);
   }
 });
 
@@ -46,9 +46,9 @@ router.post('/link', (req, res) => {
           .update(field, { fields: ['linkTransitions'] })
           .then(() => res.json({ ok: true }));
       })
-      .catch(error => errorHandler(error, res));
+      .catch(error => errorHandler.common(error, res));
   } catch (error) {
-    errorHandler(error, res);
+    errorHandler.common(error, res);
   }
 });
 

@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
       result: { user: email, linkTransitions }
     });
   } catch (error) {
-    errorHandler(error, res);
+    errorHandler.common(error, res);
   }
 });
 
@@ -50,9 +50,9 @@ router.post('/', (req, res) => {
           throw 'data_incorrect';
         }
       })
-      .catch(error => errorHandler(error, res));
+      .catch(error => errorHandler.common(error, res));
   } catch (error) {
-    errorHandler(error, res);
+    errorHandler.common(error, res);
   }
 });
 
