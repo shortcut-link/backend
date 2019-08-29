@@ -11,35 +11,45 @@ router.use(authenticate);
 
 /* Create user account */
 router.post('/', (req, res) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  models.user
-    .create({ email, password })
-    .then(({ dataValues: { email, linkTransitions } }) => {
-      const token = jwt.sign({ email }, process.env.PRIVATEKEY);
+    models.user
+      .create({ email, password })
+      .then(({ dataValues: { email, linkTransitions } }) => {
+        const token = jwt.sign({ email }, process.env.PRIVATEKEY);
 
-      res.json({
-        ok: true,
-        result: { user: { email, linkTransitions }, token }
-      });
-    })
-    .catch(error => errorHandler(error, res));
+        res.json({
+          ok: true,
+          result: { user: { email, linkTransitions }, token }
+        });
+      })
+      .catch(error => errorHandler(error, res));
+  } catch (error) {
+    errorHandler(error, res);
+  }
 });
 
 router.post('/link', (req, res) => {
-  const { email } = req.decodedToken;
-  const field = req.body;
+  try {
+    const { email } = req.decodedToken;
+    const field = req.body;
 
-  models.user
-    .findOne({
-      where: { email }
-    })
-    .then(user => {
-      user
-        .update(field, { fields: ['linkTransitions'] })
-        .then(() => res.json({ ok: true }));
-    })
-    .catch(error => errorHandler(error, res));
+    models.user
+      .findOne({
+        where: { email }
+      })
+      .then(user => {
+        if (!user) throw 'user_not_found';
+
+        user
+          .update(field, { fields: ['linkTransitions'] })
+          .then(() => res.json({ ok: true }));
+      })
+      .catch(error => errorHandler(error, res));
+  } catch (error) {
+    errorHandler(error, res);
+  }
 });
 
 module.exports = router;
