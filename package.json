@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www",
+    "cz": "git cz"
   },
   "config": {
     "commitizen": {
@@ -34,6 +35,7 @@
   "license": "MIT",
   "devDependencies": {
     "@commitlint/cli": "^8.1.0",
+    "commitizen": "^4.0.3",
     "cz-customizable": "^6.2.0",
     "dotenv": "^8.0.0",
     "husky": "^3.0.2",
