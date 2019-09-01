@@ -47,7 +47,7 @@ router.post('/', (req, res) => {
             }
           });
         } else {
-          throw 'data_incorrect';
+          throw 'not_correct_data';
         }
       })
       .catch(error => errorHandler.common(error, res));

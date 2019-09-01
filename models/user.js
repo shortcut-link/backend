@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           isEmail: {
             args: true,
-            msg: 'email_invalid'
+            msg: 'not_valid_email'
           }
         }
       },
@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           min: {
             args: 8,
-            msg: 'password_invalid'
+            msg: 'not_valid_password'
           }
         }
       },
