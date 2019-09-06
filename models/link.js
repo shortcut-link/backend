@@ -61,5 +61,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
+  link.prototype.isTransitions = function() {
+    return this.linkTransitions !== null;
+  };
+
   return link;
 };

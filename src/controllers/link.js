@@ -13,10 +13,22 @@ router.get('/:url', (req, res) => {
     const { url } = req.params;
 
     models.link
-      .findOne({ where: { url }, attributes: ['originalUrl'] })
-      .then(({ dataValues: { originalUrl } }) => {
+      .findOne({
+        where: { url }
+      })
+      .then(link => {
+        const { originalUrl, linkTransitions } = link.dataValues;
+
         if (!originalUrl) throw 'not_found';
+
         res.redirect(301, `https://www.${originalUrl}`);
+
+        if (link.isTransitions()) {
+          link.update(
+            { linkTransitions: linkTransitions + 1 },
+            { fields: ['linkTransitions'] }
+          );
+        }
       })
       .catch(error => errorHandler.link(error, res));
   } catch (error) {
