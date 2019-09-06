@@ -1,4 +1,5 @@
 const link = (error, res) => {
+  console.error('TCL: link -> error', error);
   switch (error) {
     case 'not_found':
       res.redirect(301, 'http://localhost:3000/link-not-found');
@@ -11,7 +12,7 @@ const link = (error, res) => {
 };
 
 const common = (error, res) => {
-  console.log('TCL: error', error);
+  console.error('TCL: common -> error', error);
   const errorText =
     (error.errors && error.errors[0].message) || error || 'unkown';
 
