@@ -27,7 +27,7 @@ router.post('/', (req, res) => {
   }
 });
 
-router.post('/link', (req, res) => {
+router.post('/linkSettings', (req, res) => {
   try {
     const { email } = req.decodedToken;
     const field = req.body;
@@ -43,6 +43,25 @@ router.post('/link', (req, res) => {
           .update(field, { fields: ['linkTransitions'] })
           .then(() => res.json({ ok: true }));
       })
+      .catch(error => errorHandler.common(error, res));
+  } catch (error) {
+    errorHandler.common(error, res);
+  }
+});
+
+router.get('/link', (req, res) => {
+  try {
+    const { id } = req.decodedToken;
+    const { offset } = req.body;
+
+    models.link
+      .findAll({
+        where: { user: id },
+        attributes: ['url', 'originalUrl', 'linkTransitions', 'createdAt'],
+        offset,
+        limit: 15
+      })
+      .then(links => res.json(links))
       .catch(error => errorHandler.common(error, res));
   } catch (error) {
     errorHandler.common(error, res);
