@@ -3,11 +3,8 @@ const jwt = require('jsonwebtoken');
 
 const models = require('../../models');
 const errorHandler = require('../common/errorHandler');
-const { authenticate } = require('../middlewares/authenticate');
 
 const router = express.Router();
-
-router.use(authenticate);
 
 /* Create user account */
 router.post('/', (req, res) => {

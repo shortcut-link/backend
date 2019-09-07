@@ -2,11 +2,8 @@ const express = require('express');
 
 const models = require('../../models');
 const errorHandler = require('../common/errorHandler');
-const { authenticate } = require('../middlewares/authenticate');
 
 const router = express.Router();
-
-router.use(authenticate);
 
 router.get('/:url', (req, res) => {
   try {

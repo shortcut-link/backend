@@ -1,13 +1,10 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 
-const { authenticate } = require('../middlewares/authenticate');
 const errorHandler = require('../common/errorHandler');
 const models = require('../../models');
 
 const router = express.Router();
-
-router.use(authenticate);
 
 /* Getting a user session by mail from a token */
 router.get('/', (req, res) => {
