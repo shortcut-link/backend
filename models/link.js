@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         defaultValue: null
       },
-      linkTransitions: {
+      transitions: {
         type: DataTypes.BIGINT,
         defaultValue: null
       },
@@ -48,8 +48,8 @@ module.exports = (sequelize, DataTypes) => {
           function(createdLink) {
             createdLink.url = nanoid(7);
 
-            const transitions = createdLink.linkTransitions;
-            createdLink.linkTransitions = transitions === true ? 0 : null;
+            const transitions = createdLink.transitions;
+            createdLink.transitions = transitions === true ? 0 : null;
 
             createdLink.originalUrl = createdLink.originalUrl.replace(
               /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?([a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?)$/,
@@ -62,7 +62,7 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   link.prototype.isTransitions = function() {
-    return this.linkTransitions !== null;
+    return this.transitions !== null;
   };
 
   return link;

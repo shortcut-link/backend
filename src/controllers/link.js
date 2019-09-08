@@ -14,7 +14,7 @@ router.get('/:url', (req, res) => {
         where: { url }
       })
       .then(link => {
-        const { originalUrl, linkTransitions } = link.dataValues;
+        const { originalUrl, transitions } = link.dataValues;
 
         if (!originalUrl) throw 'not_found';
 
@@ -22,8 +22,8 @@ router.get('/:url', (req, res) => {
 
         if (link.isTransitions()) {
           link.update(
-            { linkTransitions: linkTransitions + 1 },
-            { fields: ['linkTransitions'] }
+            { transitions: transitions + 1 },
+            { fields: ['transitions'] }
           );
         }
       })
@@ -42,7 +42,7 @@ router.post('/', (req, res) => {
       .create({
         originalUrl: url,
         user: token ? token.id : null,
-        linkTransitions: token ? token.linkTransitions : null
+        transitions: token ? token.linkTransitions : null
       })
       .then(({ url }) => {
         const domainWithUrl = `http://localhost:8080/${url}`;
