@@ -49,16 +49,18 @@ router.post('/linkSettings', (req, res) => {
   }
 });
 
-router.get('/link', (req, res) => {
+router.get('/links', (req, res) => {
   try {
     const { id } = req.decodedToken;
-    const { offset } = req.body;
+    const { offset } = req.query;
+
+    if (!!offset) throw 'not_params_offset';
 
     models.link
       .findAll({
         where: { user: id },
         attributes: ['url', 'originalUrl', 'transitions', 'createdAt'],
-        offset,
+        offset: +offset,
         limit: 15
       })
       .then(links => res.json(links))

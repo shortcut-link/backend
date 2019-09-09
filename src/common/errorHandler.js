@@ -14,7 +14,9 @@ const link = (error, res) => {
 const common = (error, res) => {
   console.error('TCL: common -> error', error);
   const errorText =
-    (error.errors && error.errors[0].message) || error || 'unkown';
+    (error.errors && error.errors[0].message) ||
+    (typeof error === 'string' && error) ||
+    'unkown';
 
   res.json({ ok: false, error: errorText });
 };
