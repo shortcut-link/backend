@@ -52,7 +52,7 @@ router.post('/linkSettings', (req, res) => {
 router.get('/links', async (req, res) => {
   try {
     const { id } = req.decodedToken;
-    const { offset, limit } = req.query;
+    const { offset } = req.query;
 
     const countLinks =
       +offset === 0
@@ -64,7 +64,7 @@ router.get('/links', async (req, res) => {
         where: { user: id },
         attributes: ['url', 'originalUrl', 'transitions', 'createdAt'],
         offset: +offset,
-        limit: +limit
+        limit: 20
       })
       .then(links => res.json({ count: countLinks, links }))
       .catch(error => errorHandler.common(error, res));
