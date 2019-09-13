@@ -49,24 +49,30 @@ router.post('/linkSettings', (req, res) => {
   }
 });
 
-router.get('/links', async (req, res) => {
+router.get('/links', (req, res) => {
   try {
     const { id } = req.decodedToken;
-    const { offset } = req.query;
-
-    const countLinks =
-      +offset === 0
-        ? await models.link.count({ where: { user: id } }).then(count => count)
-        : undefined;
+    const { offset, count } = req.query;
 
     models.link
       .findAll({
         where: { user: id },
         attributes: ['url', 'originalUrl', 'transitions', 'createdAt'],
         offset: +offset,
-        limit: 20
+        limit: 30
       })
-      .then(links => res.json({ count: countLinks, links }))
+      .then(async links => {
+        const countUserLinks = +count
+          ? await models.link
+              .count({ where: { user: id } })
+              .then(count => count)
+          : undefined;
+
+        return res.json({
+          count: countUserLinks,
+          links
+        });
+      })
       .catch(error => errorHandler.common(error, res));
   } catch (error) {
     errorHandler.common(error, res);
