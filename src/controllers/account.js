@@ -58,6 +58,7 @@ router.get('/links', (req, res) => {
       .findAll({
         where: { user: id },
         attributes: ['url', 'originalUrl', 'transitions', 'createdAt'],
+        order: [['createdAt', 'DESC']],
         offset: +offset,
         limit: 30
       })
