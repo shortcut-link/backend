@@ -54,4 +54,24 @@ router.post('/', (req, res) => {
   }
 });
 
+router.post('/options', (req, res) => {
+  try {
+    const { id } = req.decodedToken;
+    const {
+      url,
+      options: { tracking }
+    } = req.body;
+
+    models.link
+      .update(
+        { transitions: tracking },
+        { where: { url, user: id }, fields: ['transitions'] }
+      )
+      .then(() => res.json({ ok: true }))
+      .catch(error => errorHandler.common(error, res));
+  } catch (error) {
+    errorHandler.common(error, res);
+  }
+});
+
 module.exports = router;

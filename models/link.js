@@ -56,6 +56,19 @@ module.exports = (sequelize, DataTypes) => {
               '$2'
             );
           }
+        ],
+        beforeBulkUpdate: [
+          function(link) {
+            const transitions = link.attributes.transitions;
+
+            if (typeof transitions === 'boolean') {
+              if (transitions) {
+                link.attributes.transitions = 0;
+              } else {
+                link.attributes.transitions = null;
+              }
+            }
+          }
         ]
       }
     }
