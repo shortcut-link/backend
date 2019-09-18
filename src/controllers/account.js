@@ -33,16 +33,11 @@ router.post('/linkSettings', (req, res) => {
     const field = req.body;
 
     models.user
-      .findOne({
-        where: { email }
+      .update(field, {
+        where: { email },
+        fields: ['linkTransitions']
       })
-      .then(user => {
-        if (!user) throw 'user_not_found';
-
-        user
-          .update(field, { fields: ['linkTransitions'] })
-          .then(() => res.json({ ok: true }));
-      })
+      .then(() => res.json({ ok: true }))
       .catch(error => errorHandler.common(error, res));
   } catch (error) {
     errorHandler.common(error, res);
