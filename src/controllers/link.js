@@ -54,6 +54,20 @@ router.post('/', (req, res) => {
   }
 });
 
+router.delete('/', (req, res) => {
+  try {
+    const { id } = req.decodedToken;
+    const { url } = req.query;
+
+    models.link
+      .destroy({ where: { url, user: id } })
+      .then(() => res.json({ ok: true }))
+      .catch(error => errorHandler.common(error, res));
+  } catch (error) {
+    errorHandler.common(error, res);
+  }
+});
+
 router.post('/options', (req, res) => {
   try {
     const { id } = req.decodedToken;
