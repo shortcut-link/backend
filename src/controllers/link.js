@@ -1,7 +1,7 @@
 const express = require('express');
 
 const models = require('../../models');
-const errorHandler = require('../common/errorHandler');
+const errorHandler = require('./errors/link');
 
 const router = express.Router();
 
@@ -46,7 +46,7 @@ router.post('/', (req, res) => {
       })
       .then(({ url }) => {
         const domainWithUrl = `http://localhost:8080/${url}`;
-        res.json({ ok: true, result: { url: domainWithUrl } });
+        res.status(200).json({ url: domainWithUrl });
       })
       .catch(error => errorHandler.common(error, res));
   } catch (error) {
@@ -61,7 +61,7 @@ router.delete('/', (req, res) => {
 
     models.link
       .destroy({ where: { url, user: id } })
-      .then(() => res.json({ ok: true }))
+      .then(() => res.status(200).end())
       .catch(error => errorHandler.common(error, res));
   } catch (error) {
     errorHandler.common(error, res);
@@ -81,7 +81,7 @@ router.post('/options', (req, res) => {
         { transitions: tracking },
         { where: { url, user: id }, fields: ['transitions'] }
       )
-      .then(() => res.json({ ok: true }))
+      .then(() => res.status(200).end())
       .catch(error => errorHandler.common(error, res));
   } catch (error) {
     errorHandler.common(error, res);

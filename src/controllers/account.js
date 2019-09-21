@@ -2,7 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 
 const models = require('../../models');
-const errorHandler = require('../common/errorHandler');
+const errorHandler = require('./errors/account');
 
 const router = express.Router();
 
@@ -16,10 +16,7 @@ router.post('/', (req, res) => {
       .then(({ dataValues: { email, linkTransitions } }) => {
         const token = jwt.sign({ email }, process.env.PRIVATEKEY);
 
-        res.json({
-          ok: true,
-          result: { user: { email, linkTransitions }, token }
-        });
+        res.status(200).json({ user: { email, linkTransitions }, token });
       })
       .catch(error => errorHandler.common(error, res));
   } catch (error) {
@@ -37,7 +34,7 @@ router.post('/linkSettings', (req, res) => {
         where: { email },
         fields: ['linkTransitions']
       })
-      .then(() => res.json({ ok: true }))
+      .then(() => res.status(200).end())
       .catch(error => errorHandler.common(error, res));
   } catch (error) {
     errorHandler.common(error, res);
@@ -64,7 +61,7 @@ router.get('/links', (req, res) => {
               .then(count => count)
           : undefined;
 
-        return res.json({
+        return res.status(200).json({
           count: countUserLinks,
           links
         });

@@ -1,7 +1,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 
-const errorHandler = require('../common/errorHandler');
+const errorHandler = require('./errors/session');
 const models = require('../../models');
 
 const router = express.Router();
@@ -11,9 +11,8 @@ router.get('/', (req, res) => {
   try {
     const { email, linkTransitions } = req.decodedToken;
 
-    res.json({
-      ok: true,
-      result: { user: { email, linkTransitions } }
+    res.status(200).json({
+      user: { email, linkTransitions }
     });
   } catch (error) {
     errorHandler.common(error, res);
@@ -36,12 +35,9 @@ router.post('/', (req, res) => {
 
           const token = jwt.sign({ email }, process.env.PRIVATEKEY);
 
-          res.json({
-            ok: true,
-            result: {
-              user: { email, linkTransitions },
-              token
-            }
+          res.status(200).json({
+            user: { email, linkTransitions },
+            token
           });
         } else {
           throw 'not_correct_data';
