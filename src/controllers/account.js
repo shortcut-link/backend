@@ -41,30 +41,35 @@ router.post('/linkSettings', (req, res) => {
   }
 });
 
+router.get('/count-links', (req, res) => {
+  try {
+    const { id } = req.decodedToken;
+
+    models.link.findAndCountAll({ where: { user: id } }).then(({ count }) => {
+      return res.status(200).json({ count });
+    });
+  } catch (error) {
+    errorHandler.common(error, res);
+  }
+});
+
 router.get('/links', (req, res) => {
   try {
     const { id } = req.decodedToken;
-    const { offset, count } = req.query;
+    const { startIndex, stopIndex } = req.query;
+
+    const limit = +stopIndex - +startIndex + 1;
 
     models.link
       .findAll({
         where: { user: id },
         attributes: ['url', 'originalUrl', 'transitions', 'createdAt'],
         order: [['createdAt', 'DESC']],
-        offset: +offset,
-        limit: 30
+        offset: +startIndex,
+        limit
       })
-      .then(async links => {
-        const countUserLinks = +count
-          ? await models.link
-              .count({ where: { user: id } })
-              .then(count => count)
-          : undefined;
-
-        return res.status(200).json({
-          count: countUserLinks,
-          links
-        });
+      .then(links => {
+        return res.status(200).json({ links });
       })
       .catch(error => errorHandler.common(error, res));
   } catch (error) {
