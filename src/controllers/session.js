@@ -9,11 +9,18 @@ const router = express.Router();
 /* Getting a user session by mail from a token */
 router.get('/', (req, res) => {
   try {
-    const { email, linkTransitions } = req.decodedToken;
+    const { email } = req.decodedToken;
 
-    res.status(200).json({
-      user: { email, linkTransitions }
-    });
+    models.user
+      .findOne({
+        where: { email },
+        attributes: ['email', 'linkTransitions']
+      })
+      .then(user => {
+        res.status(200).json({
+          user: user.dataValues
+        });
+      });
   } catch (error) {
     errorHandler.common(error, res);
   }
@@ -27,16 +34,13 @@ router.post('/', (req, res) => {
     models.user
       .findOne({
         where: { email },
-        attributes: ['email', 'password', 'linkTransitions']
+        attributes: ['email', 'password']
       })
       .then(user => {
         if (user && user.isValidPassword(password)) {
-          const { email, linkTransitions } = user.dataValues;
-
           const token = jwt.sign({ email }, process.env.PRIVATEKEY);
 
           res.status(200).json({
-            user: { email, linkTransitions },
             token
           });
         } else {

@@ -13,10 +13,10 @@ router.post('/', (req, res) => {
 
     models.user
       .create({ email, password })
-      .then(({ dataValues: { email, linkTransitions } }) => {
+      .then(() => {
         const token = jwt.sign({ email }, process.env.PRIVATEKEY);
 
-        res.status(200).json({ user: { email, linkTransitions }, token });
+        res.status(200).json({ token });
       })
       .catch(error => errorHandler.common(error, res));
   } catch (error) {
