@@ -33,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
           }
         }
       },
+      admin: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: 0
+      },
       linkTransitions: {
         type: DataTypes.BOOLEAN,
         defaultValue: 0

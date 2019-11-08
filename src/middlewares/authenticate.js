@@ -13,7 +13,7 @@ const authenticate = (req, _, next) => {
     models.user
       .findOne({
         where: { email: decoded.email },
-        attributes: ['id', 'email', 'linkTransitions']
+        attributes: ['id', 'email', 'linkTransitions', 'admin']
       })
       .then(({ dataValues }) => {
         req.decodedToken = dataValues;

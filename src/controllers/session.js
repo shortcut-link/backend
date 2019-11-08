@@ -9,18 +9,11 @@ const router = express.Router();
 /* Getting a user session by mail from a token */
 router.get('/', (req, res) => {
   try {
-    const { email } = req.decodedToken;
+    const { email, linkTransitions, admin } = req.decodedToken;
 
-    models.user
-      .findOne({
-        where: { email },
-        attributes: ['email', 'linkTransitions']
-      })
-      .then(user => {
-        res.status(200).json({
-          user: user.dataValues
-        });
-      });
+    res.status(200).json({
+      user: { email, linkTransitions, admin }
+    });
   } catch (error) {
     errorHandler.common(error, res);
   }
