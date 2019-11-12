@@ -34,9 +34,9 @@ router.get('/:url', (req, res) => {
         where: { url }
       })
       .then(link => {
-        const { originalUrl, transitions } = link.dataValues;
+        if (!link) throw 'not_found';
 
-        if (!originalUrl) throw 'not_found';
+        const { originalUrl, transitions } = link.dataValues;
 
         res.redirect(301, `https://www.${originalUrl}`);
 
