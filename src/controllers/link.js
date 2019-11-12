@@ -5,6 +5,26 @@ const errorHandler = require('./errors/link');
 
 const router = express.Router();
 
+router.get('/find', (req, res) => {
+  try {
+    const { url } = req.query;
+
+    models.link
+      .findOne({
+        where: { url },
+        attributes: ['url', 'originalUrl', 'user', 'transitions', 'createdAt']
+      })
+      .then(link => {
+        if (!link) throw 'link_not_found';
+
+        res.json({ link });
+      })
+      .catch(error => errorHandler.common(error, res));
+  } catch (error) {
+    errorHandler.common(error, res);
+  }
+});
+
 router.get('/:url', (req, res) => {
   try {
     const { url } = req.params;
@@ -27,7 +47,7 @@ router.get('/:url', (req, res) => {
           );
         }
       })
-      .catch(error => errorHandler.link(error, res));
+      .catch(error => errorHandler.common(error, res));
   } catch (error) {
     errorHandler.common(error, res);
   }
