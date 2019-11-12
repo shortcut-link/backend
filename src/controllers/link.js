@@ -65,8 +65,7 @@ router.post('/', (req, res) => {
         transitions: token ? token.linkTransitions : null
       })
       .then(({ url }) => {
-        const domainWithUrl = `http://localhost:8080/${url}`;
-        res.status(200).json({ url: domainWithUrl });
+        res.status(200).json({ url });
       })
       .catch(error => errorHandler.common(error, res));
   } catch (error) {
