@@ -20,7 +20,7 @@ router.get('/', (req, res) => {
 });
 
 /* Creating a user session */
-router.post('/', (req, res) => {
+router.put('/', (req, res) => {
   try {
     const { email, password } = req.body;
 

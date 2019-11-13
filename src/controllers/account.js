@@ -7,16 +7,14 @@ const errorHandler = require('./errors/account');
 const router = express.Router();
 
 /* Create user account */
-router.post('/', (req, res) => {
+router.put('/', (req, res) => {
   try {
     const { email, password } = req.body;
 
     models.user
       .create({ email, password })
       .then(() => {
-        const token = jwt.sign({ email }, process.env.PRIVATEKEY);
-
-        res.status(200).json({ token });
+        res.sendStatus(201);
       })
       .catch(error => errorHandler.common(error, res));
   } catch (error) {
