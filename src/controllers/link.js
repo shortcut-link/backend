@@ -14,10 +14,12 @@ router.get('/find', (req, res) => {
         where: { url },
         attributes: ['url', 'originalUrl', 'user', 'transitions', 'createdAt']
       })
-      .then(link => {
+      .then(async link => {
         if (!link) throw 'link_not_found';
 
-        res.json({ link });
+        await link.changeUserIdToEmail(models);
+
+        res.json(link);
       })
       .catch(error => errorHandler.common(error, res));
   } catch (error) {

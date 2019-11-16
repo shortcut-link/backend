@@ -78,5 +78,13 @@ module.exports = (sequelize, DataTypes) => {
     return this.transitions !== null;
   };
 
+  link.prototype.changeUserIdToEmail = async function(models) {
+    await models.user
+      .findOne({ where: { id: this.user }, attributes: ['email'] })
+      .then(({ email }) => {
+        this.user = email;
+      });
+  };
+
   return link;
 };
