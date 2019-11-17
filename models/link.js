@@ -56,19 +56,6 @@ module.exports = (sequelize, DataTypes) => {
               '$2'
             );
           }
-        ],
-        beforeBulkUpdate: [
-          function(link) {
-            const transitions = link.attributes.transitions;
-
-            if (typeof transitions === 'boolean') {
-              if (transitions) {
-                link.attributes.transitions = 0;
-              } else {
-                link.attributes.transitions = null;
-              }
-            }
-          }
         ]
       }
     }
@@ -84,6 +71,17 @@ module.exports = (sequelize, DataTypes) => {
       .then(({ email }) => {
         this.user = email;
       });
+  };
+
+  link.prototype.changeParameter = async function(parameter, value) {
+    switch (parameter) {
+      case 'transitions':
+        this.transitions = value ? 0 : null;
+        break;
+
+      default:
+        break;
+    }
   };
 
   return link;

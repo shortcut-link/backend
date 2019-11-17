@@ -89,20 +89,21 @@ router.delete('/', (req, res) => {
   }
 });
 
-router.post('/options', (req, res) => {
+router.post('/parameter', (req, res) => {
   try {
-    const { id } = req.decodedToken;
-    const {
-      url,
-      options: { tracking }
-    } = req.body;
+    const { url, parameter } = req.query;
+    const { value } = req.body;
 
     models.link
-      .update(
-        { transitions: tracking },
-        { where: { url, user: id }, fields: ['transitions'] }
-      )
-      .then(() => res.status(200).end())
+      .findOne({ where: { url } })
+      .then(async link => {
+        if (!link) throw 'link_not_found';
+
+        await link.changeParameter(parameter, value);
+        link.save();
+
+        res.status(200).end();
+      })
       .catch(error => errorHandler.common(error, res));
   } catch (error) {
     errorHandler.common(error, res);
