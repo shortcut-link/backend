@@ -1,7 +1,8 @@
 const express = require('express');
 
-var { account, session, link } = require('./controllers');
+var { account, session, link, adminLink } = require('./controllers');
 const { authenticate } = require('./middlewares/authenticate');
+const { verifyAdmin } = require('./middlewares/admin');
 
 const prefix = process.env.API_PREFIX;
 
@@ -15,4 +16,11 @@ module.exports = app => {
   app.use(`${prefix}/link`, link);
   app.use(`${prefix}/account`, account);
   app.use(`${prefix}/account/session`, session);
+
+  /*
+   * ADMIN
+   */
+  app.use(verifyAdmin);
+
+  app.use(`${prefix}/admin/link`, adminLink);
 };

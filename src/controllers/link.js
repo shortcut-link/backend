@@ -5,28 +5,6 @@ const errorHandler = require('./errors/link');
 
 const router = express.Router();
 
-router.get('/find', (req, res) => {
-  try {
-    const { url } = req.query;
-
-    models.link
-      .findOne({
-        where: { url },
-        attributes: ['url', 'originalUrl', 'user', 'transitions', 'createdAt']
-      })
-      .then(async link => {
-        if (!link) throw 'link_not_found';
-
-        await link.changeUserIdToEmail(models);
-
-        res.json(link);
-      })
-      .catch(error => errorHandler.common(error, res));
-  } catch (error) {
-    errorHandler.common(error, res);
-  }
-});
-
 router.get('/:url', (req, res) => {
   try {
     const { url } = req.params;
@@ -91,11 +69,12 @@ router.delete('/', (req, res) => {
 
 router.post('/parameter', (req, res) => {
   try {
+    const { id } = req.decodedToken;
     const { url, parameter } = req.query;
     const { value } = req.body;
 
     models.link
-      .findOne({ where: { url } })
+      .findOne({ where: { user: id, url } })
       .then(async link => {
         if (!link) throw 'link_not_found';
 
