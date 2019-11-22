@@ -56,7 +56,7 @@ router.get('/links', (req, res) => {
     const { id } = req.decodedToken;
     const { startIndex, stopIndex } = req.query;
 
-    const limit = +stopIndex - +startIndex + 1;
+    const limit = +stopIndex - +startIndex;
 
     models.link
       .findAll({
