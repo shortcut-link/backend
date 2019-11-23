@@ -1,10 +1,12 @@
 const express = require('express');
+const Sequelize = require('sequelize');
 
 const models = require('../../../models');
 const errorHandler = require('../errors/link');
 const { verifyAdmin } = require('../../middlewares/admin');
 
 const router = express.Router();
+const Op = Sequelize.Op;
 
 router.get('/find', (req, res) => {
   try {
@@ -56,6 +58,45 @@ router.delete('/', (req, res) => {
     models.link
       .destroy({ where: { url } })
       .then(() => res.status(200).end())
+      .catch(error => errorHandler.common(error, res));
+  } catch (error) {
+    errorHandler.common(error, res);
+  }
+});
+
+router.get('/top', async (req, res) => {
+  try {
+    const { startIndex, stopIndex, period } = req.query;
+
+    const limit = +stopIndex - +startIndex;
+
+    let where = {};
+    let date = new Date();
+
+    if (period === 'day') {
+      date = date.setDate(date.getDate() - 1);
+      where.createdAt = { [Op.gte]: date };
+    }
+
+    if (period === 'month') {
+      date = date.setMonth(date.getMonth() - 1);
+      where.createdAt = { [Op.gte]: date };
+    }
+
+    await models.link
+      .findAll({
+        where,
+        attributes: ['url', 'originalUrl', 'transitions', 'createdAt', 'user'],
+        order: [
+          ['transitions', 'DESC'],
+          ['createdAt', 'DESC']
+        ],
+        offset: +startIndex,
+        limit
+      })
+      .then(links => {
+        return res.status(200).json({ links });
+      })
       .catch(error => errorHandler.common(error, res));
   } catch (error) {
     errorHandler.common(error, res);
