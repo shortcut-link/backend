@@ -27,8 +27,14 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       user: {
-        type: DataTypes.INTEGER,
-        defaultValue: null
+        type: DataTypes.STRING(254),
+        defaultValue: null,
+        validate: {
+          isEmail: {
+            args: true,
+            msg: 'not_valid_email'
+          }
+        }
       },
       transitions: {
         type: DataTypes.BIGINT,
@@ -63,14 +69,6 @@ module.exports = (sequelize, DataTypes) => {
 
   link.prototype.isTransitions = function() {
     return this.transitions !== null;
-  };
-
-  link.prototype.changeUserIdToEmail = async function(models) {
-    await models.user
-      .findOne({ where: { id: this.user }, attributes: ['email'] })
-      .then(({ email }) => {
-        this.user = email;
-      });
   };
 
   link.prototype.changeParameter = async function(parameter, value) {

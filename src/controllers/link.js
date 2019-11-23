@@ -41,7 +41,7 @@ router.post('/', (req, res) => {
     models.link
       .create({
         originalUrl: url,
-        user: token ? token.id : null,
+        user: token ? token.email : null,
         transitions: token ? token.linkTransitions : null
       })
       .then(({ url }) => {
@@ -55,11 +55,11 @@ router.post('/', (req, res) => {
 
 router.delete('/', (req, res) => {
   try {
-    const { id } = req.decodedToken;
+    const { email } = req.decodedToken;
     const { url } = req.query;
 
     models.link
-      .destroy({ where: { url, user: id } })
+      .destroy({ where: { url, user: email } })
       .then(() => res.status(200).end())
       .catch(error => errorHandler.common(error, res));
   } catch (error) {
@@ -69,12 +69,12 @@ router.delete('/', (req, res) => {
 
 router.post('/parameter', (req, res) => {
   try {
-    const { id } = req.decodedToken;
+    const { email } = req.decodedToken;
     const { url, parameter } = req.query;
     const { value } = req.body;
 
     models.link
-      .findOne({ where: { user: id, url } })
+      .findOne({ where: { user: email, url } })
       .then(async link => {
         if (!link) throw 'link_not_found';
 

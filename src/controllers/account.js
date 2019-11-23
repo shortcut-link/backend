@@ -41,11 +41,13 @@ router.post('/linkSettings', (req, res) => {
 
 router.get('/count-links', (req, res) => {
   try {
-    const { id } = req.decodedToken;
+    const { email } = req.decodedToken;
 
-    models.link.findAndCountAll({ where: { user: id } }).then(({ count }) => {
-      return res.status(200).json({ count });
-    });
+    models.link
+      .findAndCountAll({ where: { user: email } })
+      .then(({ count }) => {
+        return res.status(200).json({ count });
+      });
   } catch (error) {
     errorHandler.common(error, res);
   }
@@ -53,14 +55,14 @@ router.get('/count-links', (req, res) => {
 
 router.get('/links', (req, res) => {
   try {
-    const { id } = req.decodedToken;
+    const { email } = req.decodedToken;
     const { startIndex, stopIndex } = req.query;
 
     const limit = +stopIndex - +startIndex;
 
     models.link
       .findAll({
-        where: { user: id },
+        where: { user: email },
         attributes: ['url', 'originalUrl', 'transitions', 'createdAt'],
         order: [['createdAt', 'DESC']],
         offset: +startIndex,
