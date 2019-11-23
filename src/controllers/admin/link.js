@@ -3,7 +3,6 @@ const Sequelize = require('sequelize');
 
 const models = require('../../../models');
 const errorHandler = require('../errors/link');
-const { verifyAdmin } = require('../../middlewares/admin');
 
 const router = express.Router();
 const Op = Sequelize.Op;

@@ -71,7 +71,7 @@ module.exports = (sequelize, DataTypes) => {
     return this.transitions !== null;
   };
 
-  link.prototype.changeParameter = async function(parameter, value) {
+  link.prototype.changeParameter = function(parameter, value) {
     switch (parameter) {
       case 'transitions':
         this.transitions = value ? 0 : null;
