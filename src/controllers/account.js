@@ -24,13 +24,16 @@ router.put('/', (req, res) => {
 router.post('/linkSettings', (req, res) => {
   try {
     const { email } = req.token;
-    const field = req.body;
+    const { parameter, value } = req.body;
 
     models.user
-      .update(field, {
-        where: { email },
-        fields: ['linkTransitions']
-      })
+      .update(
+        { [parameter]: value },
+        {
+          where: { email },
+          fields: ['linkTransitions']
+        }
+      )
       .then(() => res.status(200).end())
       .catch(error => errorHandler.common(error, res));
   } catch (error) {
