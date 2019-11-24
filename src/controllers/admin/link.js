@@ -19,8 +19,6 @@ router.get('/find', (req, res) => {
       .then(async link => {
         if (!link) throw 'link_not_found';
 
-        await link.changeUserIdToEmail(models);
-
         res.json(link);
       })
       .catch(error => errorHandler.common(error, res));
