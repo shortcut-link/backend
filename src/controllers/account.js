@@ -23,7 +23,7 @@ router.put('/', (req, res) => {
 
 router.post('/linkSettings', (req, res) => {
   try {
-    const { email } = req.decodedToken;
+    const { email } = req.token;
     const field = req.body;
 
     models.user
@@ -40,7 +40,7 @@ router.post('/linkSettings', (req, res) => {
 
 router.get('/count-links', (req, res) => {
   try {
-    const { email } = req.decodedToken;
+    const { email } = req.token;
 
     models.link
       .findAndCountAll({ where: { user: email } })
@@ -54,7 +54,7 @@ router.get('/count-links', (req, res) => {
 
 router.get('/links', (req, res) => {
   try {
-    const { email } = req.decodedToken;
+    const { email } = req.token;
     const { startIndex, stopIndex } = req.query;
 
     const limit = +stopIndex - +startIndex;

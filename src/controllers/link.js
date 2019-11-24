@@ -35,7 +35,7 @@ router.get('/:url', (req, res) => {
 
 router.post('/', (req, res) => {
   try {
-    const token = req.decodedToken;
+    const token = req.token;
     const { url } = req.body;
 
     models.link
@@ -55,7 +55,7 @@ router.post('/', (req, res) => {
 
 router.delete('/', (req, res) => {
   try {
-    const { email } = req.decodedToken;
+    const { email } = req.token;
     const { url } = req.query;
 
     models.link
@@ -69,7 +69,7 @@ router.delete('/', (req, res) => {
 
 router.post('/parameter', (req, res) => {
   try {
-    const { email } = req.decodedToken;
+    const { email } = req.token;
     const { url, parameter } = req.query;
     const { value } = req.body;
 

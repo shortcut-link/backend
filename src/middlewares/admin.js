@@ -1,5 +1,5 @@
 const verifyAdmin = (req, _, next) => {
-  const { admin } = req.decodedToken;
+  const { admin } = req.token;
 
   if (admin) {
     return next();

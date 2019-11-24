@@ -9,7 +9,7 @@ const router = express.Router();
 /* Getting a user session by mail from a token */
 router.get('/', (req, res) => {
   try {
-    const { email, linkTransitions, admin } = req.decodedToken;
+    const { email, linkTransitions, admin } = req.token;
 
     res.status(200).json({
       user: { email, linkTransitions, admin }
