@@ -5,7 +5,10 @@ const errorHandler = require('./errors/account');
 
 const router = express.Router();
 
-/* Create user account */
+/*
+ * Create user account
+ * https://documenter.getpostman.com/view/9580525/SW7c3TaJ?version=latest#678789c5-14b7-408a-9cb4-68fb83b6af3c
+ */
 router.put('/', (req, res) => {
   try {
     const { email, password } = req.body;
@@ -21,6 +24,10 @@ router.put('/', (req, res) => {
   }
 });
 
+/*
+ * Changing the parameters of the created link
+ * https://documenter.getpostman.com/view/9580525/SW7c3TaJ?version=latest#ebf6248b-923d-4b4e-b71d-1b800a4ba2d7
+ */
 router.post('/linkSettings', (req, res) => {
   try {
     const { email } = req.token;
@@ -41,6 +48,10 @@ router.post('/linkSettings', (req, res) => {
   }
 });
 
+/*
+ * Number of user links
+ * https://documenter.getpostman.com/view/9580525/SW7c3TaJ?version=latest#d3cfcc87-6d60-45ee-a633-5f8ddb78afa1
+ */
 router.get('/count-links', (req, res) => {
   try {
     const { email } = req.token;
@@ -55,6 +66,10 @@ router.get('/count-links', (req, res) => {
   }
 });
 
+/*
+ * Download user links
+ * https://documenter.getpostman.com/view/9580525/SW7c3TaJ?version=latest#7bc0ea50-602d-4b6a-8ac5-d1104b3c080b
+ */
 router.get('/links', (req, res) => {
   try {
     const { email } = req.token;

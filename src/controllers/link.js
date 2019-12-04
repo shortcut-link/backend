@@ -5,6 +5,10 @@ const errorHandler = require('./errors/link');
 
 const router = express.Router();
 
+/*
+ * Jump to shortened links
+ * https://documenter.getpostman.com/view/9580525/SW7c3TaJ?version=latest#d9243e81-afc7-4813-9a11-c64e48622806
+ */
 router.get('/:url', (req, res) => {
   try {
     const { url } = req.params;
@@ -33,6 +37,10 @@ router.get('/:url', (req, res) => {
   }
 });
 
+/*
+ * Create a shortened link
+ *  https://documenter.getpostman.com/view/9580525/SW7c3TaJ?version=latest#25e7330d-4db1-49fc-b799-89a7edaf0c0d
+ */
 router.post('/', (req, res) => {
   try {
     const token = req.token;
@@ -53,6 +61,10 @@ router.post('/', (req, res) => {
   }
 });
 
+/*
+ * Delete shortened link
+ * https://documenter.getpostman.com/view/9580525/SW7c3TaJ?version=latest#eefa684a-0a8d-4af0-95ac-726d4e5aba32
+ */
 router.delete('/', (req, res) => {
   try {
     const { email } = req.token;
@@ -67,6 +79,10 @@ router.delete('/', (req, res) => {
   }
 });
 
+/*
+ * Change link options
+ * https://documenter.getpostman.com/view/9580525/SW7c3TaJ?version=latest#0c6022fd-cc25-4e84-af65-bc30f1b55c03
+ */
 router.post('/parameter', (req, res) => {
   try {
     const { email } = req.token;
